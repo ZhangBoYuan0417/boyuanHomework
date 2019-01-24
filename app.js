@@ -5,9 +5,11 @@ const json = require('koa-json');
 const logger = require('koa-logger');
 const serve = require('koa-static');
 const path = require('path');
-const koa2HistoryApiFallback = require('koa2-history-api-fallback')
+const koa2HistoryApiFallback = require('koa2-history-api-fallback');
+const cors = require('koa-cors')
 
 const app = new koa();
+app.use(cors())
 const router = new koaRouter();
 
 app.use(require('koa-bodyparser')());

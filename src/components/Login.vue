@@ -3,7 +3,7 @@
   <el-row class="content">
     <el-col :xs="24" :sm="{span: 6,offset: 9}">
       <span class="title">
-       欢迎登录 
+       欢迎登录 {{userName}}
       </span>
       <el-row>
         <el-input 
@@ -27,13 +27,20 @@ export default {
   data () {
     return {
       account: '',
-      password: ''
+      password: '',
+      userName: ''
     };
   },
   methods: {
     loginToDo() {
         this.$router.push('./todolist')
     }
+  },
+  mounted() {
+    this.$http.get('/user/userInfo').then(res => {
+      res = res.data;
+      this.userName = res.name;
+    })
   }
 };
 </script>
