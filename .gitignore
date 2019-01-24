@@ -1,0 +1,15 @@
+npm-debug.log
+dev_dist/
+node_modules/
+log/*
+status/*
+dist/
+.idea/*
+.DS_Store
+config/env_config.js
+*.swp
+.vscode/
+package-lock.json
+documentations
+templates/pages/*
+!templates/pages/.gitkeep
