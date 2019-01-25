@@ -14,7 +14,6 @@
   "dependencies": {
     "axios": "^0.18.0",
     "element-ui": "^2.4.11",
-    "iview": "^3.2.2",
     "koa": "^2.6.2",
     "koa-bodyparser": "^4.2.1",
     "koa-cors": "0.0.16",
@@ -24,6 +23,7 @@
     "koa-static": "^5.0.0",
     "koa2-history-api-fallback": "0.0.5",
     "leaflet": "^1.4.0",
+    "mint-ui": "^2.2.13",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
     "vue": "^2.5.2",

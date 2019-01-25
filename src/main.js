@@ -4,6 +4,10 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import axios from 'axios'
+import Mint from 'mint-ui';
+import 'mint-ui/lib/style.css';
+ 
+Vue.use(Mint);
 
 Vue.prototype.$http = axios.create({
   baseURL: 'http://localhost:8889/'
@@ -12,10 +16,6 @@ Vue.prototype.$http = axios.create({
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 Vue.use(ElementUI)
-
-import iView from 'iview';
-import 'iview/dist/styles/iview.css';
-Vue.use(iView)
 
 Vue.config.productionTip = false
 
