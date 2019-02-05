@@ -63,13 +63,16 @@
 </script>
 <style>
 #nav-container {
-    height: 50px;
+    height: 1rem;
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
     display: flex;
-    flex-direction: row
+    flex-direction: row;
+    font-size: 0.25rem;
+    background: #fff;
+    z-index: 10;
 }
 .nav-item {
     width: 25%;
@@ -79,6 +82,7 @@
     color: #399bff
 }
 .nav-img {
-    width: 20px;
+    width: 0.4rem;
+    margin-top: 0.05rem
 }
 </style>

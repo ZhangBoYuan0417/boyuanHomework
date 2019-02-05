@@ -1,11 +1,13 @@
 <template>
-    <dmap></dmap>
+    <div>
+        hehe
+    </div>
 </template>
+
 <script>
-import DMap from '../common/DMap'
 export default {
     components: {
-        dmap: DMap
+        // dmap: DMap
     }
 }
 </script>

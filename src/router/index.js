@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
-import Login from '../components/Login.vue'
-import TodoList from '../components/TodoList.vue'
+import Login from '../components/page/Login.vue'
 
 import SendOrder from '../components/page/SendOrder.vue'
 import GetOrder from '../components/page/GetOrder.vue'
@@ -19,11 +17,6 @@ export default new Router({
       path: '/',
       name: 'Login',
       component: Login
-    },
-    {
-      path: '/todolist',
-      name: 'TodoList',
-      component: TodoList
     },
     {
       path: '/send',

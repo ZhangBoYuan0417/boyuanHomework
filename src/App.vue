@@ -1,13 +1,16 @@
 <template>
   <div id="app">
-    <!-- <img src="./assets/logo.png"> -->
+    <header-nav></header-nav>        
+    <d-map></d-map>
     <router-view></router-view>
     <bottom-nav></bottom-nav>
   </div>
 </template>
 
 <script>
+import headerNav from './components/HeaderNav'
 import bottomNav from './components/BottomNav'
+import dMap from './components/common/DMap'
 export default {
   name: 'App',
   data(){
@@ -16,10 +19,15 @@ export default {
     }
   },
   components: {
-    bottomNav
+    bottomNav,
+    dMap,
+    headerNav
   },
   mounted() {
     // console.log(this.$router)
+    // this.$http.get('/boyuan/userInfo',{
+    //   id: 1
+    // })
   }
 
 }
@@ -27,11 +35,8 @@ export default {
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  width: 100%;
+  height: 100%;
 }
 </style>

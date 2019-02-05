@@ -27,7 +27,7 @@ app.on('error', function(err, ctx){
   console.log('server error', err);
 });
 
-router.use('/user', route.routes())
+router.use('/boyuan', route.routes())
 
 app.use(router.routes())
 app.use(koa2HistoryApiFallback())

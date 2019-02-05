@@ -9,6 +9,11 @@ import 'mint-ui/lib/style.css';
  
 Vue.use(Mint);
 
+require("./assets/js/rem.js")
+
+require("./assets/css/reset.css")
+require("./assets/css/common.css")
+
 Vue.prototype.$http = axios.create({
   baseURL: 'http://localhost:8889/'
 })

@@ -6,6 +6,7 @@ const koaRouter = require('koa-router')
 
 const router = koaRouter()
 
+router.get('/userInfoTest', user.getUserInfoTest)
 router.get('/userInfo', user.getUserInfo)
 
 module.exports = router
