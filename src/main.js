@@ -6,6 +6,7 @@ import router from './router'
 import axios from 'axios'
 import Mint from 'mint-ui';
 import 'mint-ui/lib/style.css';
+import store from './vuex/store'
  
 Vue.use(Mint);
 
@@ -24,10 +25,26 @@ Vue.use(ElementUI)
 
 Vue.config.productionTip = false
 
+router.beforeEach((to,from,next) =>{
+  const token = sessionStorage.getItem('boyuan');
+  if(to.path == '/'){
+    sessionStorage.setItem('boyuan',null);
+    next(); 
+  }else{
+    if(token != 'null' && token != null){
+      Vue.prototype.$http.defaults.headers.common['Authorization'] = 'Bearer ' + token; // 全局设定header的token验证
+      next() 
+    }else{
+      next('/') 
+    }
+  }
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

@@ -6,7 +6,8 @@ const logger = require('koa-logger');
 const serve = require('koa-static');
 const path = require('path');
 const koa2HistoryApiFallback = require('koa2-history-api-fallback');
-const cors = require('koa-cors')
+const cors = require('koa-cors');
+const jwtKoa = require('koa-jwt');
 
 const app = new koa();
 app.use(cors())
@@ -15,6 +16,10 @@ const router = new koaRouter();
 app.use(require('koa-bodyparser')());
 app.use(json());
 app.use(logger());
+
+app.use(jwtKoa('boyuan_homework').unless({
+    path: [/^\/boyuan\/login/]
+  }))
 
 app.use(function* (next){
   let start = new Date;
