@@ -12,15 +12,18 @@ export default {
       userName: ''
     }
   },
+  watch: {
+    '$route'() {
+      this.initUserName();
+    }
+  },
   mounted() {
     this.initUserName();
-    // console.log(this.getUserInfo())
   },
   methods: {
     initUserName() {
       const user = this.getUserInfo() || {id: '', name: ''}
       this.userName = user.name
-      
     },
     getUserInfo() {
       console.log('获取session')

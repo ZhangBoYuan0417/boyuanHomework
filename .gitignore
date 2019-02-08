@@ -13,4 +13,4 @@ package-lock.json
 documentations
 templates/pages/*
 !templates/pages/.gitkeep
-app.js
+index.html
