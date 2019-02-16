@@ -6,7 +6,11 @@ import router from './router'
 import axios from 'axios'
 import Mint from 'mint-ui';
 import 'mint-ui/lib/style.css';
-import store from './vuex/store'
+import store from './vuex/store';
+
+import  { ToastPlugin, ConfirmPlugin } from 'vux'
+Vue.use(ToastPlugin, {position: 'top', type: 'text', width:'5rem', time: '5000'})
+Vue.use(ConfirmPlugin)
  
 Vue.use(Mint);
 
@@ -16,26 +20,24 @@ require("./assets/css/reset.css")
 require("./assets/css/common.css")
 
 Vue.prototype.$http = axios.create({
-  baseURL: 'http://localhost:8889/'
+  baseURL: 'http://localhost:8889/',
 })
 
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
-Vue.use(ElementUI)
 
 Vue.config.productionTip = false
 
 router.beforeEach((to,from,next) =>{
   const token = sessionStorage.getItem('boyuan');
-  if(to.path == '/'){
-    sessionStorage.setItem('boyuan',null);
-    next(); 
+  if(to.path == '/'){ // 如果是跳转到登录页的
+    if(token != 'null' && token != null){
+      next('/send') // 如果有token就转向todolist不返回登录页
+    }
+    next(); // 否则跳转回登录页
   }else{
     if(token != 'null' && token != null){
-      Vue.prototype.$http.defaults.headers.common['Authorization'] = 'Bearer ' + token; // 全局设定header的token验证
-      next() 
+      next() // 如果有token就正常转向
     }else{
-      next('/') 
+      next('/') // 否则跳转回登录页
     }
   }
 })

@@ -17,9 +17,6 @@ app.use(require('koa-bodyparser')());
 app.use(json());
 app.use(logger());
 
-app.use(jwtKoa('boyuan_homework').unless({
-    path: [/^\/boyuan\/login/]
-  }))
 
 app.use(function* (next){
   let start = new Date;

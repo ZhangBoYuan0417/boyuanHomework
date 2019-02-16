@@ -21,7 +21,7 @@ const login = async function(ctx) {
         name: userInfo.name,
         id: userInfo.id
       };
-      const secret = 'boyuan_homework';
+      const secret = 'boyuanhomework';
       const token = jwt.sign(userToken, secret);
       ctx.body = common.reqBody(0, '', {token})
     } else {

@@ -23,7 +23,7 @@ export default {
   methods: {
     initUserName() {
       const user = this.getUserInfo() || {id: '', name: ''}
-      this.userName = user.name
+      this.userName = user.name;
     },
     getUserInfo() {
       console.log('获取session')

@@ -1,6 +1,6 @@
 // models/user.js
 const db = require('../config/db.js'), 
-      userModel = '../schema/userInfo.js'; // 引入userInfo的表结构
+      userModel = '../schema/userinfo.js'; // 引入userInfo的表结构
 const HomeworkDb = db.HomeworkDb; // 引入数据库
 
 const User = HomeworkDb.import(userModel); // 用sequelize的import方法引入表结构，实例化了User。
@@ -25,7 +25,7 @@ const getUserByName = async function(name) {
 
 const creatNewUser = async function(name, password) {
   try {
-    await HomeworkDb.create({
+    await User.create({
       name,
       password
     })

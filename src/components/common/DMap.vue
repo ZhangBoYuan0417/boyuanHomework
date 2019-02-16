@@ -10,10 +10,22 @@ export default {
         console.log('map init')
         var map = new AMap.Map('map-container', {
             center:[117.000923,36.675807],
-            zoom:11,
+            zoom:16,
             // mapStyle: 'amap://styles/macaron',
-            layer:[new AMap.TileLayer()]
+            layer:[new AMap.TileLayer()],
+            center: [126.619484,45.70743]
         });
+
+        var gps = [126.627695,45.714603];
+        AMap.convertFrom(gps, 'gps', function (status, result) {
+            if (result.info === 'ok') {
+                var lnglats = result.locations; // Array.<LngLat>
+                console.log(lnglats)
+            }
+        });
+        // map.on('mapmove', () => {
+        //     console.log(map.getCenter( ))
+        // })
         // var map = L.map('map-container', {
         //     center: [51.505, -0.09],
         //     zoom: 13
