@@ -1,55 +1,122 @@
 <template>
   <div id="login-container">
-    <h1>您好，请先登录</h1>
-    <mt-field label="用户名" placeholder="请输入用户名" v-model="name"></mt-field>
-    <mt-field label="密码" type='password' placeholder="请输入密码" v-model="password"></mt-field>
-    <mt-button type="primary" @click="login">登录</mt-button>
+    <h2>欢迎 (0.0)</h2>
+    <span style="float:right">{{ navMsg }}</span>
+    <group v-if="loginPageType">
+      <x-input title="用户名" v-model="login.name"></x-input>
+      <x-input title="密码" v-model="login.password"></x-input>
+      <x-button type="primary" @click.native="toLogin">登录</x-button>
+    </group>
+    <group v-if="!loginPageType">
+      <x-input title="用户名" v-model="logup.name" placeholder="请使用数字和字母的组合" :is-type="nameCheck"></x-input>
+      <x-input title="密码" @on-change="passwordDouCheck" v-model="logup.password" placeholder="请使用数字和字母的组合" :is-type="nameCheck"></x-input>
+      <x-input title="确认密码" @on-change="passwordDouCheck" v-model="secPwd" placeholder="请保持与输入的密码一致"></x-input>
+      <h4>{{errMsg}}</h4>
+      <x-button type="primary" @click.native="toLogup">注册</x-button>
+    </group>
   </div>
   
 </template>
 
 
 <script>
-import { Toast } from 'mint-ui';
+import { Group ,XInput ,XButton } from 'vux'
 export default {
+  components: {
+    Group, XInput, XButton 
+  },
   data() {
     return {
-      name: 'boyuan',
-      password: '123'
+      login:{
+        name: 'boyuan',
+        password: '123',
+      },
+      logup:{
+        name: '',
+        password: ''
+      },
+      loginPageType: true, // true => login; false => logup
+      navMsg: '我还没有账号',
+      nameRe: new RegExp("^[A-Za-z0-9]+$"),
+      errMsg: '',
+      secPwd: ''
     }
   },
   methods: {
-    login() {
+    toLogin() {
       const params = {
-        name: this.name, 
-        password: this.password
+        name: this.login.name, 
+        password: this.login.password
       }
       this.$http.post('/boyuan/login',params).then(res => {
         console.log(res)
         if (res.data.result.code === 0) {
           sessionStorage.setItem('boyuan',res.data.data.token);
-          Toast({
-            message: `登陆成功！${this.name}, 欢迎你`,
-            position: 'bottom',
-            duration: 1000
+          this.$vux.toast.show({
+            text: `登陆成功！${this.login.name}, 欢迎你`,
+            time: 1000
           })
           this.$router.push('/send')
           
         } else {
           sessionStorage.setItem('boyuan',null);
-          Toast({
-            message: res.data.result.msg,
-            position: 'bottom',
-            duration: 1000
+          this.$vux.toast.show({
+            text: res.data.result.msg,
+            time: 1000
           })
         }
       }, () => {
-        Toast({
-          message: '网络错误，请检查网络连接后重试！',
-          position: 'bottom',
-          duration: 1000
+        this.$vux.toast.show({
+          text: '网络错误，请检查网络连接后重试！',
+          time: 1000
         })
       })
+    },
+    toLogup() {
+      if (this.logup.name === '') {
+        this.$vux.toast.show({
+          text: '用户名为空！',
+          time: 1000
+        });
+        return;
+      } else if (this.logup.password === '' || this.secPwd === '') {
+        this.$vux.toast.show({
+          text: '密码为空！',
+          time: 1000
+        });
+        return;
+      }
+      if (!this.nameRe.test(this.logup.name)) {
+        this.$vux.toast.show({
+          text: '用户名格式错误!',
+          time: 1000
+        });
+        return;
+      } else if(!this.nameRe.test(this.logup.password)) {
+        this.$vux.toast.show({
+          text: '密码格式错误!',
+          time: 1000
+        });
+        return;
+      } else if (this.secPwd != this.logup.password) {
+        this.$vux.toast.show({
+          text: '两次密码不一致!',
+          time: 1000
+        });
+        return;
+      }
+      const params = Object.assign({}, this.logup)
+      this.$http.post('/boyuan/logup', params)
+      console.log(params)
+    },
+    nameCheck(str) {
+      return {valid: this.nameRe.test(str), msg: '只能由数字和字母构成'}
+    },
+    passwordDouCheck() {
+      console.log('hehe')
+      if (this.secPwd === '') {this.errMsg = '';return};
+      this.errMsg = this.secPwd === this.logup.password ? '' : '两次密码不一致！'
+      // return {valid: str === this.logup.password, msg: '两次密码不一致！'}
     }
   },
   mounted() {

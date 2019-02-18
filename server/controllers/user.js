@@ -32,6 +32,22 @@ const login = async function(ctx) {
   }
 }
 
+const logup = async function(ctx) {
+  try {
+    const req = ctx.request.body;
+    req.password = bcrypt.hashSync(req.password, 10)
+    // ctx.body = req
+    const res = await user.creatNewUser(req)
+    if (res.code === 0) {
+      ctx.body = common.reqBody(0, '', {req})
+    } else {
+      ctx.body = common.reqBody(1, res.text, {})
+    }
+  } catch(err){
+    ctx.body = common.reqBody(2, `${err}`, {err})
+  }
+}
+
 
 const getUserInfoTest = async function(ctx) {
   ctx.body = {
@@ -44,7 +60,8 @@ const getUserInfoTest = async function(ctx) {
 module.exports = {
   getUserInfo,
   getUserInfoTest,
-  login
+  login,
+  logup
 }
 // cd server
 // sequelize-auto -o "./schema" -d homework -h 127.0.0.1 -u root -p 3306 -x 123456  -e mysql

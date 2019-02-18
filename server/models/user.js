@@ -23,11 +23,11 @@ const getUserByName = async function(name) {
   return userInfo // 返回数据
 }
 
-const creatNewUser = async function(name, password) {
+const creatNewUser = async function(params) {
   try {
     await User.create({
-      name,
-      password
+      name: params.name,
+      password: params.password
     })
     return {
       code: 0,

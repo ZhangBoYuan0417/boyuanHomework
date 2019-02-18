@@ -37,6 +37,7 @@ export default {
       }
     },
     gotoLogin() {
+      sessionStorage.setItem('boyuan',null);      
       this.$router.push('/')
     }
   }

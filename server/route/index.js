@@ -10,6 +10,7 @@ const router = koaRouter()
 router.get('/userInfoTest', user.getUserInfoTest)
 router.get('/userInfo', user.getUserInfo)
 router.post('/login', user.login)
+router.post('/logup', user.logup)
 
 router.post('/sendOrder', order.sendOrder)
 
