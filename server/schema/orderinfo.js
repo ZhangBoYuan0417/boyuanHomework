@@ -13,7 +13,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     sendId: {
-      type: DataTypes.INTEGER(11),
+      type: DataTypes.CHAR(128),
       allowNull: false
     },
     getTime: {

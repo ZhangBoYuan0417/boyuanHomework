@@ -7,6 +7,7 @@ import axios from 'axios'
 import Mint from 'mint-ui';
 import 'mint-ui/lib/style.css';
 import store from './vuex/store';
+import jwt from 'jsonwebtoken';
 
 import  { ToastPlugin, ConfirmPlugin } from 'vux'
 Vue.use(ToastPlugin, {position: 'top', type: 'text', width:'5rem', time: '5000'})
@@ -27,7 +28,7 @@ Vue.prototype.$http = axios.create({
 Vue.config.productionTip = false
 
 router.beforeEach((to,from,next) =>{
-  const token = sessionStorage.getItem('boyuan');
+  const token = localStorage.getItem('boyuan');
   if(to.path == '/'){ // 如果是跳转到登录页的
     if(token != 'null' && token != null){
       next('/send') // 如果有token就转向todolist不返回登录页

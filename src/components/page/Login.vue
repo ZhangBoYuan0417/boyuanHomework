@@ -1,7 +1,7 @@
 <template>
   <div id="login-container">
-    <h2>欢迎 (0.0)</h2>
-    <span style="float:right">{{ navMsg }}</span>
+    <h2>欢迎{{ loginPageType ? '登录' : '注册' }} (0.0)</h2>
+    <span style="float:right" @click="changeLogType">{{ loginPageType  ? toLogUpMsg : toLogInMsg}}</span>
     <group v-if="loginPageType">
       <x-input title="用户名" v-model="login.name"></x-input>
       <x-input title="密码" v-model="login.password"></x-input>
@@ -36,7 +36,8 @@ export default {
         password: ''
       },
       loginPageType: true, // true => login; false => logup
-      navMsg: '我还没有账号',
+      toLogUpMsg: '我还没有账号',
+      toLogInMsg : '我要登录',
       nameRe: new RegExp("^[A-Za-z0-9]+$"),
       errMsg: '',
       secPwd: ''
@@ -51,7 +52,8 @@ export default {
       this.$http.post('/boyuan/login',params).then(res => {
         console.log(res)
         if (res.data.result.code === 0) {
-          sessionStorage.setItem('boyuan',res.data.data.token);
+          this.$store.state.userName = 'boyuan'
+          localStorage.setItem('boyuan',res.data.data.token);
           this.$vux.toast.show({
             text: `登陆成功！${this.login.name}, 欢迎你`,
             time: 1000
@@ -59,7 +61,7 @@ export default {
           this.$router.push('/send')
           
         } else {
-          sessionStorage.setItem('boyuan',null);
+          localStorage.setItem('boyuan',null);
           this.$vux.toast.show({
             text: res.data.result.msg,
             time: 1000
@@ -106,17 +108,37 @@ export default {
         return;
       }
       const params = Object.assign({}, this.logup)
-      this.$http.post('/boyuan/logup', params)
+      this.$http.post('/boyuan/logup', params).then(res => {
+        console.log(res)
+        if(res.data.result.code === 0) {
+          this.$vux.toast.show({
+            text: '注册成功，返回登录页面!',
+            time: 1000
+          });
+          this.login.name = this.logup.name;
+          this.login.password = '';
+          this.logup.name = '';
+          this.logup.password = '';
+          this.secPwd = '';
+          this.loginPageType = true
+        } else {
+          this.$vux.toast.show({
+            text: res.data.result.msg,
+            time: 1000
+          });
+        }
+      })
       console.log(params)
     },
     nameCheck(str) {
       return {valid: this.nameRe.test(str), msg: '只能由数字和字母构成'}
     },
     passwordDouCheck() {
-      console.log('hehe')
       if (this.secPwd === '') {this.errMsg = '';return};
       this.errMsg = this.secPwd === this.logup.password ? '' : '两次密码不一致！'
-      // return {valid: str === this.logup.password, msg: '两次密码不一致！'}
+    },
+    changeLogType() {
+      this.loginPageType = !this.loginPageType;
     }
   },
   mounted() {

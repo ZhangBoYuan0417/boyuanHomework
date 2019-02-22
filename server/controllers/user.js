@@ -33,8 +33,13 @@ const login = async function(ctx) {
 }
 
 const logup = async function(ctx) {
+  const req = ctx.request.body;
+  const userInfo = await user.getUserByName(req.name);
+  if (userInfo) {
+    ctx.body = common.reqBody(1, `注册失败:用户名${req.name}已存在！请重新注册！`, {})
+    return;
+  }
   try {
-    const req = ctx.request.body;
     req.password = bcrypt.hashSync(req.password, 10)
     // ctx.body = req
     const res = await user.creatNewUser(req)

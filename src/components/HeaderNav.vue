@@ -1,7 +1,7 @@
 <template>
   <div id="top-nav">
-    菜鸟驿站
-    <span style="float:right">{{userName}}, <span class="exitBtn" @click="gotoLogin">退出</span></span>
+    菜鸟驿站 
+    <span style="float:right">{{$store.state.userName}}, <span class="exitBtn" @click="gotoLogin">退出</span></span>
   </div>
 </template>
 <script>
@@ -9,13 +9,12 @@ import jwt from 'jsonwebtoken'
 export default {
   data() {
     return {
-      userName: ''
     }
   },
   watch: {
-    '$route'() {
-      this.initUserName();
-    }
+    // '$route'() {
+    //   this.initUserName();
+    // }
   },
   mounted() {
     this.initUserName();
@@ -23,11 +22,11 @@ export default {
   methods: {
     initUserName() {
       const user = this.getUserInfo() || {id: '', name: ''}
-      this.userName = user.name;
+      this.$store.state.userName = user.name;
     },
     getUserInfo() {
       console.log('获取session')
-      const token = sessionStorage.getItem('boyuan');
+      const token = localStorage.getItem('boyuan');
       if(token != null && token != 'null'){
         console.log(token)
         let decode = jwt.decode(token); // 解析token
@@ -37,7 +36,8 @@ export default {
       }
     },
     gotoLogin() {
-      sessionStorage.setItem('boyuan',null);      
+      localStorage.setItem('boyuan',null);
+      this.$store.state.userName = ''    
       this.$router.push('/')
     }
   }
