@@ -1,4 +1,5 @@
 // models/order.js
+// orderTpye: 0=>待抢；1=>已抢，尚未领到； 2=>已领到，送件中； 3=>已送达，订单完成
 const db = require('../config/db.js'), 
       orderModel = '../schema/orderinfo.js';
 const HomeworkDb = db.HomeworkDb;
@@ -28,6 +29,21 @@ const createNewOrder = async function(params) {
   }
 }
 
+const getAll0Order = async function() {
+  try {
+    const orderArr = await Order.findAll({
+      orderType: 0
+    })
+    return {code:0, orderArr}
+  } catch(error) {
+    return {
+      code: 1,
+      text: `db error: ${error}`
+    }
+  }
+}
+
 module.exports = {
   createNewOrder, // 发单
+  getAll0Order, // 获取所有未领取订单
 }

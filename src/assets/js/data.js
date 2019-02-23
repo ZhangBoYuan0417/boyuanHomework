@@ -14,6 +14,12 @@ const boxInfoArr =  [
   [{name: '请选择快递是否易碎', value: 'false'}, {name: '易碎', value: 'careful'}, {name:'不易碎', value: 'nocareful'}]
 ]
 
+const boxSize = {
+  s: '小件',
+  m: '中件',
+  l: '大件'
+}
+
 module.exports = {
-  expressObj, boxInfoArr
+  expressObj, boxInfoArr, boxSize
 }
