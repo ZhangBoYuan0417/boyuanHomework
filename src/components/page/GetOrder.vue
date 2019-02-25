@@ -1,7 +1,12 @@
 <template>
     <div class="getpage-container">
-      <order-info v-for="(v, k) in orders" :key="k" :orderData="v"></order-info>
-      <div v-if="noOrders">暂无订单，请稍后刷新下试试。。。</div>
+      <div v-show="hasOrder">
+        ok
+      </div>
+      <div v-show="!hasOrder">
+        <order-info v-for="(v, k) in orders" :key="k" :orderData="v"></order-info>
+        <div v-if="noOrders">暂无订单，请稍后刷新下试试。。。</div>
+      </div>
     </div>
 </template>
 <script>
@@ -21,15 +26,45 @@ export default {
       //   boxType: 's,careful'
       // }
       orders: new Array,
-      noOrders: false
+      noOrders: false,
+      hasOrder: ''
     }
   },
   mounted() {
-    this.initOrdersInfo()
+    this.initMyOrder();
   },
   methods: {
+    initMyOrder() {
+      const params = {
+        'where': {
+          'orderType': {'$eq': 1},
+          'getId': {'$eq': this.$store.state.userName},
+          'sendId': {'$ne': this.$store.state.userName}
+        }
+      }
+      this.$http.post('/boyuan/getorders',{params}).then(res => {
+        res = res.data;
+        console.log('res', res.data)
+        if (res.data.length != 0) {
+          this.$vux.toast.show({
+            text: '您有订单尚未完成，完成后才能抢新的订单！',
+            time: 1000
+          })
+          this.hasOrder = true;
+        } else {
+          this.hasOrder = false;
+          this.initOrdersInfo();
+        }
+      })
+    },
     initOrdersInfo() {
-      this.$http.post('/boyuan/get0orders').then(res => {
+      const params = {
+        'where': {
+          'orderType': {'$eq': 0},
+          'sendId': {'$ne': this.$store.state.userName}
+        }
+      }
+      this.$http.post('/boyuan/getorders',{params} ).then(res => {
         console.log(res)
         res = res.data
         if(res.result.code === 0) {

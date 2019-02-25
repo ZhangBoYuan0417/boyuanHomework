@@ -8,8 +8,7 @@
       支付金额：{{ orderData.money }} <br />
       快递大小：{{ boxSize }} <br />
       是否易碎：{{ needCareful }} <br />
-      <x-button type="primary" @click.native="toLogup">我要抢单！</x-button>
-
+      <x-button type="primary" @click.native="toGetIt">我要抢单！</x-button>
     </div>
   </div>
 </template>
@@ -43,6 +42,25 @@ export default {
     },
     showDetail() {
 
+    },
+    toGetIt() {
+      // console.log('hehe', this.$store.state.userName)
+      return
+      const params = {
+        'set': {
+          'orderType': 1,
+          'getId': this.$store.state.userName
+        },
+        'where': {
+          'orderId': this.orderData.orderId
+        }
+      }
+      this.$http.post('/boyuan/updateOrder', params).then(res => {
+        this.$vux.toast.show({
+          text: '抢单成功',
+          time: 1000
+        })
+      })
     }
   }
   

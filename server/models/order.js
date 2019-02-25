@@ -29,12 +29,24 @@ const createNewOrder = async function(params) {
   }
 }
 
-const getAll0Order = async function() {
+const findAllOrder = async function(params) {
   try {
-    const orderArr = await Order.findAll({
-      orderType: 0
-    })
+    const orderArr = await Order.findAll(params)
     return {code:0, orderArr}
+  } catch(error) {
+    return {
+      code: 1,
+      text: `db error: ${error}`
+    }
+  }
+}
+
+const updataOrderDB = async function(set, where) {
+  try {
+    console.log('set', set)
+    console.log('where', where)
+    await Order.update(set,{'where': where})
+    return {code: 0}
   } catch(error) {
     return {
       code: 1,
@@ -45,5 +57,6 @@ const getAll0Order = async function() {
 
 module.exports = {
   createNewOrder, // 发单
-  getAll0Order, // 获取所有未领取订单
+  findAllOrder, // 查询order表
+  updataOrderDB, // 更新order表
 }

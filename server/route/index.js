@@ -13,6 +13,7 @@ router.post('/login', user.login)
 router.post('/logup', user.logup)
 
 router.post('/sendOrder', order.sendOrder)
-router.post('/get0orders', order.get0Orders)
+router.post('/getorders', order.getOrders)
+router.post('/updateOrder', order.updateOrder)
 
 module.exports = router

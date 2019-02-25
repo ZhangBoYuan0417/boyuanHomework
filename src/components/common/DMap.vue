@@ -33,6 +33,9 @@ export default {
         // L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { 
         // attribution: '© boyuan'
         // }).addTo(map);
+    },
+    beforeDestroy() {
+        console.log('map destory')
     }
 }
     

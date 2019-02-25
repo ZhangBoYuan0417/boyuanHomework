@@ -21,7 +21,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     getId: {
-      type: DataTypes.INTEGER(11),
+      type: DataTypes.CHAR(128),
       allowNull: true
     },
     orderType: {
