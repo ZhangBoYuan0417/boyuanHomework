@@ -1,19 +1,20 @@
 <template>
     <div class="getpage-container">
       <div v-show="hasOrder">
-        ok
+        <order-operation></order-operation>
       </div>
       <div v-show="!hasOrder">
-        <order-info v-for="(v, k) in orders" :key="k" :orderData="v"></order-info>
+        <order-info v-for="(v, k) in orders" :key="k" :orderData="v" orderInfoType="get"></order-info>
         <div v-if="noOrders">暂无订单，请稍后刷新下试试。。。</div>
       </div>
     </div>
 </template>
 <script>
 import OrderInfo from '../common/OrderInfo'
+import OrderOperation from '../common/OrderOperation'
 export default {
   components: {
-    OrderInfo
+    OrderInfo, OrderOperation
   },
   data() {
     return {
@@ -27,17 +28,18 @@ export default {
       // }
       orders: new Array,
       noOrders: false,
-      hasOrder: ''
+      hasOrder: '',
     }
   },
   mounted() {
     this.initMyOrder();
+    this.$eventHub.$on('refresh-orders', this.initMyOrder)
   },
   methods: {
     initMyOrder() {
       const params = {
         'where': {
-          'orderType': {'$eq': 1},
+          'orderType': {'$between': [1,2]},
           'getId': {'$eq': this.$store.state.userName},
           'sendId': {'$ne': this.$store.state.userName}
         }
@@ -46,11 +48,10 @@ export default {
         res = res.data;
         console.log('res', res.data)
         if (res.data.length != 0) {
-          this.$vux.toast.show({
-            text: '您有订单尚未完成，完成后才能抢新的订单！',
-            time: 1000
-          })
           this.hasOrder = true;
+          // this.myOrder = res.data[0]
+          console.log('res.data', res.data)
+          this.$eventHub.$emit('initMyOrder', res.data[0])
         } else {
           this.hasOrder = false;
           this.initOrdersInfo();
@@ -67,7 +68,7 @@ export default {
       this.$http.post('/boyuan/getorders',{params} ).then(res => {
         console.log(res)
         res = res.data
-        if(res.result.code === 0) {
+        if(res.data.length != 0) {
           this.orders = res.data;
           this.noOrders = false;
         } else {
@@ -76,6 +77,9 @@ export default {
         }
       })
     }
+  },
+  beforeDestroy() {
+    this.$eventHub.$off('refresh-orders')
   }
     
 }

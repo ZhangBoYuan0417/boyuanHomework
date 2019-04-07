@@ -8,16 +8,38 @@
       支付金额：{{ orderData.money }} <br />
       快递大小：{{ boxSize }} <br />
       是否易碎：{{ needCareful }} <br />
-      <x-button type="primary" @click.native="toGetIt">我要抢单！</x-button>
+      <x-button v-if="orderInfoType === 'get'" type="primary" @click.native="toGetIt">我要抢单！</x-button>
+      <x-button v-if="orderInfoType != 'get'" type="primary" @click.native="showFlow = !showFlow">订单流程</x-button>
     </div>
+
+    <x-dialog class="" v-model="showFlow" hide-on-blur>
+      <timeline class="order-process">
+        <timeline-item v-if="orderData.orderType === 3">
+          <h4>订单已经完成</h4>
+          <p>444</p>
+        </timeline-item>
+        <timeline-item v-if="orderData.orderType >= 2">
+          <h4>快递派送中</h4>
+          <p>333</p>
+        </timeline-item>
+        <timeline-item v-if="orderData.orderType >= 1">
+          <h4>取件中</h4>
+          <p>222</p>
+        </timeline-item>
+        <timeline-item>
+          <h4>暂无人抢单</h4>
+          <p>111</p>
+        </timeline-item>
+		</timeline>
+    </x-dialog>
   </div>
 </template>
 <script>
 import DATA from '../../assets/js/data.js';
-import { dateFormat, XButton } from 'vux'
+import { dateFormat, XButton, XDialog, Timeline, TimelineItem } from 'vux'
 export default {
-  props: ['orderData'],
-  components: { XButton },
+  props: ['orderData', 'orderInfoType'],
+  components: { XButton, XDialog, Timeline, TimelineItem },
   data() {
     return {
       from: '',
@@ -25,7 +47,9 @@ export default {
       sendTime: '',
       boxSize: '',
       needCareful: '',
-      isDetailShow: false
+      isDetailShow: false,
+      showFlow: false,
+
     }
   },
   mounted() {
@@ -44,12 +68,11 @@ export default {
 
     },
     toGetIt() {
-      // console.log('hehe', this.$store.state.userName)
-      return
       const params = {
         'set': {
           'orderType': 1,
-          'getId': this.$store.state.userName
+          'getId': this.$store.state.userName,
+          'getTime': (new Date()).getTime()
         },
         'where': {
           'orderId': this.orderData.orderId
@@ -59,7 +82,8 @@ export default {
         this.$vux.toast.show({
           text: '抢单成功',
           time: 1000
-        })
+        });
+        this.$eventHub.$emit('refresh-orders')
       })
     }
   }
@@ -74,6 +98,18 @@ export default {
 .detail-info {
   /* float: right; */
   /* text-align: right */
+}
+
+.order-container /deep/ .vux-timeline-item-content {
+  padding: 0 0 .5rem 1.2rem
+}
+.order-process p {
+  color: #888;
+  font-size: 0.3rem;
+}
+.order-process h4 {
+  color: #666;
+  font-weight: normal;
 }
 </style>
 

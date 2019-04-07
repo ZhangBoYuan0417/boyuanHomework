@@ -26,7 +26,7 @@ const updateOrder = async function(ctx) {
   // console.log(req)
   const result = await order.updataOrderDB(req.set, req.where);
   if (result.code === 0) {
-    ctx.body = common.reqBody(0, '', '抢单成功！！！')
+    ctx.body = common.reqBody(0, '', 'ok')
   } else {
     ctx.body = common.reqBody(2, 'db error', result)
   }

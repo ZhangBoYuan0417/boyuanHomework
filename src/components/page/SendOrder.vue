@@ -58,7 +58,7 @@ export default {
           confirmText: '确认完毕，发单！',
           cancelText: '我再看看！',
           onConfirm () {
-            const params = Object.assign({}, res.params, {user:'boyuan'})
+            const params = Object.assign({}, res.params, {user:`${_this.$store.state.userName}`, sendTime: (new Date()).getTime()})
             _this.$http.post('/boyuan/sendOrder', params)
           }
         })

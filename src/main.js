@@ -24,6 +24,7 @@ Vue.prototype.$http = axios.create({
   baseURL: 'http://localhost:8889/',
 })
 
+Vue.prototype.$eventHub = new Vue();
 
 Vue.config.productionTip = false
 

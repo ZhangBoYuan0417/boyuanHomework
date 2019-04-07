@@ -9,7 +9,7 @@ const Order = HomeworkDb.import(orderModel);
 const createNewOrder = async function(params) {
   try {
     await Order.create({
-      sendTime: new Date().getTime(),
+      sendTime: params.sendTime,
       sendId: params.user,
       orderType: 0,
       money: params.money,

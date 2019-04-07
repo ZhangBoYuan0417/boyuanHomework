@@ -52,7 +52,7 @@ export default {
       this.$http.post('/boyuan/login',params).then(res => {
         console.log(res)
         if (res.data.result.code === 0) {
-          this.$store.state.userName = 'boyuan'
+          this.$store.state.userName = this.login.name
           localStorage.setItem('boyuan',res.data.data.token);
           this.$vux.toast.show({
             text: `登陆成功！${this.login.name}, 欢迎你`,
