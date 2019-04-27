@@ -18,14 +18,6 @@ export default {
   },
   data() {
     return {
-      // orders: {
-      //   sendTime: '1550922928',
-      //   sendId: 'boyuan',
-      //   money: 50,
-      //   from: 'zhongt',
-      //   to: 'c26',
-      //   boxType: 's,careful'
-      // }
       orders: new Array,
       noOrders: false,
       hasOrder: '',
@@ -88,7 +80,7 @@ export default {
 .getpage-container {
   z-index: 10;
 
-  height: 4rem;
+  height: 4.5rem;
 
   position: fixed;
   bottom: 1.25rem;

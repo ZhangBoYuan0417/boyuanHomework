@@ -8,6 +8,7 @@
       <x-button type="primary" @click.native="toLogin">登录</x-button>
     </group>
     <group v-if="!loginPageType">
+      <x-input title="手机号" v-model="logup.phone" placeholder="请输入你的手机号" keyboard="number" is-type="china-mobile"></x-input>
       <x-input title="用户名" v-model="logup.name" placeholder="请使用数字和字母的组合" :is-type="nameCheck"></x-input>
       <x-input title="密码" @on-change="passwordDouCheck" v-model="logup.password" placeholder="请使用数字和字母的组合" :is-type="nameCheck"></x-input>
       <x-input title="确认密码" @on-change="passwordDouCheck" v-model="secPwd" placeholder="请保持与输入的密码一致"></x-input>
@@ -33,7 +34,8 @@ export default {
       },
       logup:{
         name: '',
-        password: ''
+        password: '',
+        phone: ''
       },
       loginPageType: true, // true => login; false => logup
       toLogUpMsg: '我还没有账号',
@@ -87,6 +89,12 @@ export default {
           time: 1000
         });
         return;
+      } else if (this.logup.phone === '') {
+        this.$vux.toast.show({
+          text: '手机号为空！',
+          time: 1000
+        });
+        return;
       }
       if (!this.nameRe.test(this.logup.name)) {
         this.$vux.toast.show({
@@ -106,8 +114,15 @@ export default {
           time: 1000
         });
         return;
+      } else if (this.logup.phone.length != 11) {
+        this.$vux.toast.show({
+          text: '手机号格式有误!',
+          time: 1000
+        });
+        return;
       }
       const params = Object.assign({}, this.logup)
+      console.log('params', params)
       this.$http.post('/boyuan/logup', params).then(res => {
         console.log(res)
         if(res.data.result.code === 0) {
@@ -132,6 +147,9 @@ export default {
     },
     nameCheck(str) {
       return {valid: this.nameRe.test(str), msg: '只能由数字和字母构成'}
+    },
+    phoneCheck(str) {
+      return str.length === 11 ? '' : '手机号格式有误' ;
     },
     passwordDouCheck() {
       if (this.secPwd === '') {this.errMsg = '';return};

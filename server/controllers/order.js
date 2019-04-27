@@ -32,8 +32,16 @@ const updateOrder = async function(ctx) {
   }
 }
 
+const orderNum = async function(ctx) {
+  const req = ctx.request.body.userName;
+  const getOrdersNum = await order.queryOrderNumDB({'getId': req})
+  const sendOrdersNum = await order.queryOrderNumDB({'sendId': req})
+  ctx.body = common.reqBody(0, '', {getOrdersNum, sendOrdersNum})
+}
+
 module.exports = {
   sendOrder,
   getOrders,
-  updateOrder
+  updateOrder,
+  orderNum
 }

@@ -1,13 +1,9 @@
 <template>
   <div class="op-container">
-    <!-- <step class="step-process" v-model="order.orderType">
-      <step-item title="" description="暂无人接单"></step-item>
-      <step-item title="" description="快递尚未领取"></step-item>
-      <step-item title="" description="送快递中"></step-item>
-      <step-item title="" description="订单已完成"></step-item>
-    </step> -->
     <divider>快递状态</divider>
     <h3 class="order-msg"> {{stepData[order.orderType]}} </h3>
+    <divider>取件码</divider>
+    <h3 class="order-msg"> {{order.boxId}} </h3>
     <x-button type="primary" v-if="~~[1,2].indexOf(order.orderType) >= 0" action-type="button" @click.native="handleBtn">{{btnMsg[order.orderType - 1]}}</x-button>
   </div>
 </template>
@@ -54,9 +50,10 @@ export default {
         console.log(this.order.orderType)
         if (this.order.orderType === 2) {
           this.$vux.toast.show({
-          text: '恭喜您，订单已完成，即将返回订单页面',
-          time: 1000
-        });
+            text: '恭喜您，订单已完成，即将返回订单页面',
+            time: 1000
+          });
+          this.$eventHub.$emit('clearRoadPlan')
         }
         this.$eventHub.$emit('refresh-orders')
       })

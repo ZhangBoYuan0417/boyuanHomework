@@ -1,23 +1,32 @@
 <template>
   <div class="sendpage-container">
-    <group>
+    <group style="margin-bottom:100px">
       <popup-picker :data="expressArr" title="从哪拿：" v-model="selected.fromMsg" @on-change='fromChanged'></popup-picker>
-      <x-input title="送到哪：" v-model="selected.to" placeholder="请输入地址" placeholder-align="right"></x-input>
+      <cell title="送到哪：" :value="`${selected.to || '请选择地址'} >`" @click.native="poiSearchShow"></cell>
+      <x-input title="取件码: " placeholder="请在此输入" text-align="right" v-model="selected.boxId"></x-input>
       <popup-picker :data="boxInfoArr" title="快递信息: " v-model="selected.boxTypeMsg" @on-change='boxTypeChanged'></popup-picker>
       <cell title="支付金额：" :inline-desc="selected.money+'元'" primary="content">
         <range v-model="selected.money" :min="10" :max="50" :step="5"></range>
       </cell>
       <x-button @click.native="sendOrder">提交订单</x-button>
     </group>
+    <search @result-click="resultClick"
+            @on-change="getPoiResult"
+            :results="poiResults"
+            v-model="poiName"
+            position="absolute"
+            class="poiSearchPanel"
+            ref="search"
+    ></search>
   </div>
 </template>
 
 <script>
-import { XInput, PopupPicker, Group, Range, Cell, XButton } from 'vux';
+import { XInput, PopupPicker, Group, Range, Cell, XButton, Search } from 'vux';
 import DATA from '../../assets/js/data.js'
 export default {
   components:{
-    XInput, PopupPicker, Group, Range, Cell, XButton
+    XInput, PopupPicker, Group, Range, Cell, XButton, Search
   },
   data() {
     let expressArr = [[]];
@@ -31,11 +40,18 @@ export default {
         boxType: [''],
         boxTypeMsg: ['请选择'],
         to: '',
-        money: 10
+        toLatLng: '',
+        money: 10,
+        boxId: ''
       },
       expressArr: expressArr,
-      boxInfoArr: DATA.boxInfoArr
+      boxInfoArr: DATA.boxInfoArr,
+      poiResults: [],
+      poiName: '',
     }
+  },
+  mounted() {
+    this.$eventHub.$on('poiResults', this.setPoiResults)
   },
   methods: {
     sendOrder() {
@@ -52,6 +68,7 @@ export default {
           content: `<div style="text-align: left">
                       <p>快递公司：${_this.selected.fromMsg}</p>
                       <p>目的地：${_this.selected.to}</p>
+                      <p>取件码：${_this.selected.boxId}</p>
                       <p>快递信息：${_this.selected.boxTypeMsg.join(';')}</p>
                       <p>金额：${_this.selected.money}元</p>
                     </div>`,
@@ -97,6 +114,9 @@ export default {
       if (this.selected.boxType.some(item => {return item === ''})) {
         msg = '请选择快递类型后重新提交！'
       }
+      if (this.selected.boxId === '') {
+        msg = '请输入取件码后重新提交！'
+      }
       if (msg === '') {
         return { 
           msg: msg,
@@ -104,13 +124,43 @@ export default {
             from: this.selected.from,
             to: this.selected.to,
             boxType: this.selected.boxType,
-            money: this.selected.money
+            money: this.selected.money,
+            toLatLng: this.selected.toLatLng,
+            boxId: this.selected.boxId
           }
         }
       } else {
         return {msg}
       }
       // console.log("req", req)
+    },
+    // handleIptChange(val) {
+    //   // console.log(val)
+    //   this.$eventHub.$emit('autoComplete', val)
+    // },
+    resultClick(res) {
+      console.log(res)
+      this.selected.to = res.title;
+      this.selected.toLatLng = res.latlng;
+      this.$eventHub.$emit('drawMarker', res.location)
+      console.log('this.seected', this.selected)
+    },
+    getPoiResult(val) {
+      console.log(val)
+      if (val === null) return
+      this.$eventHub.$emit('autoComplete', val)
+    },
+    setPoiResults(res) {
+      console.log(res)
+      this.poiResults.splice(0)
+      if (res === null || res === "NO_PARAMS") return
+      res.tips.forEach(v => {
+        this.poiResults.push({'title': v.name, 'latlng': `${v.location.lat},${v.location.lng}`, 'location': v.location})
+      })
+      console.log(this.poiResults)
+    },
+    poiSearchShow() {
+      this.$refs.search.setFocus()
     }
   }
 
@@ -121,7 +171,7 @@ export default {
 .sendpage-container {
   z-index: 10;
 
-  height: 4rem;
+  height: 4.5rem;
 
   position: fixed;
   bottom: 1.25rem;
@@ -135,7 +185,16 @@ export default {
 }
 .select-btn {
   font-size: .125rem;
-
   width: 80%;
+}
+.poiSearchPanel {
+  /* margin-top: 100px; */
+  /* z-index: 1000; */
+
+  position: flex;
+  top: 0;
+  bottom: 0;
+
+  overflow: scroll;
 }
 </style>

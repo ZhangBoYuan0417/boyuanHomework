@@ -1,6 +1,6 @@
 <template>
   <div class="order-container">
-    <div @click="isDetailShow = !isDetailShow">订单：从 {{ from }} => 到 {{ orderData.to }} </div>
+    <div @click="showDetail">订单：从 {{ from }} => 到 {{ orderData.to }} </div>
     <div class="detail-info" v-show="isDetailShow">
       起点：{{ from }} <br />
       终点：{{ orderData.to }} <br />
@@ -48,11 +48,11 @@ export default {
       boxSize: '',
       needCareful: '',
       isDetailShow: false,
-      showFlow: false,
-
+      showFlow: false
     }
   },
   mounted() {
+    this.$eventHub.$on('roadInfo', this.roadInfo)
     this.initOrderInfo();
   },
   methods: {
@@ -65,7 +65,15 @@ export default {
       this.sendTime = dateFormat(new Date(Number(this.orderData.sendTime)), 'YYYY-MM-DD HH:mm')
     },
     showDetail() {
-
+      this.isDetailShow = !this.isDetailShow
+      if (this.orderInfoType != 'get') return
+      if (!this.isDetailShow) return
+      const end = this.orderData.toLatLng.split(',')
+      const start = DATA.expressObj[this.orderData.from]['location']
+      console.log('start', start)
+      console.log('end', end)
+      this.$eventHub.$emit('roadPlan', [start, end.reverse()])
+      console.log(this.orderData)
     },
     toGetIt() {
       const params = {
@@ -85,6 +93,14 @@ export default {
         });
         this.$eventHub.$emit('refresh-orders')
       })
+    },
+    roadInfo(info) {
+      const distance = info.routes[0].distance;
+      const time = info.routes[0].time; 
+      this.$vux.toast.show({
+          text: `预计时间: ${time} 秒; 步行距离: ${distance} 米`,
+          time: 1000
+        });
     }
   }
   

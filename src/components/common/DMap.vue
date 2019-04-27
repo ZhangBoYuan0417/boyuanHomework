@@ -4,51 +4,116 @@
     </div>
 </template>
 <script>
-// import L from 'leaflet'
 export default {
-    mounted() {
-        console.log('map init')
-        var map = new AMap.Map('map-container', {
-            center:[117.000923,36.675807],
-            zoom:16,
-            // mapStyle: 'amap://styles/macaron',
-            layer:[new AMap.TileLayer()],
-            center: [126.619484,45.70743]
-        });
-
-        var gps = [126.627695,45.714603];
-        AMap.convertFrom(gps, 'gps', function (status, result) {
-            if (result.info === 'ok') {
-                var lnglats = result.locations; // Array.<LngLat>
-                console.log(lnglats)
-            }
-        });
-        // map.on('mapmove', () => {
-        //     console.log(map.getCenter( ))
-        // })
-        // var map = L.map('map-container', {
-        //     center: [51.505, -0.09],
-        //     zoom: 13
-        // });
-        // L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { 
-        // attribution: '© boyuan'
-        // }).addTo(map);
-    },
-    beforeDestroy() {
-        console.log('map destory')
+  data() {
+    return {
+      map: {},
+      markers: [],
+      walking: {}
     }
+  },
+  watch: {
+    $route() {
+      this.clearRoadPlan();
+      this.clearAllMarkers();
+    }
+  },
+  mounted() {
+    var map = this.map = new AMap.Map('map-container', {
+      zoom:16,
+      layer:[new AMap.TileLayer()],
+      center: [126.619484,45.70743],
+      resizeEnable: true,
+    });
+    console.log('map init')
+    this.walking = new AMap.Walking({
+        map: map,
+    })
+    // this.initRoadPlan()
+
+    // AMap.plugin([
+    //   'AMap.Scale',
+    //   'AMap.Geolocation',
+    // ], function(){
+    //   console.log('do it')
+    //   map.addControl(new AMap.Scale())
+    //   map.addControl(new AMap.Geolocation());
+    // });
+
+    var gps = [126.627695,45.714603];
+    this.$eventHub.$on('autoComplete', this.autoComplete)
+    this.$eventHub.$on('drawMarker', this.drawMarker)
+    this.$eventHub.$on('roadPlan', this.roadPlan)
+    this.$eventHub.$on('clearRoadPlan', this.clearRoadPlan)
+  },
+  methods: {
+    autoComplete(keyword) {
+      const _this = this;
+      AMap.plugin('AMap.Autocomplete', function(){
+        var autoOptions = {
+          city: '哈尔滨'
+        }
+        var autoComplete= new AMap.Autocomplete(autoOptions);
+        autoComplete.search(keyword, function(status, result) {
+          console.log(result)
+          if (result === {}) return;
+          _this.$eventHub.$emit('poiResults', result)
+        })
+      })
+    },
+    drawMarker(location) {
+      console.log('location', location)
+      this.clearAllMarkers()
+      this.markers.push(new AMap.Marker({position: [location.lng, location.lat]}))
+      this.map.setCenter([location.lng, location.lat - 0.001])
+      this.map.add(this.markers)
+    },
+    clearAllMarkers() {
+      this.map.remove(this.markers)
+      this.markers = []
+    },
+    initRoadPlan() {
+      const _this = this;
+      _this.walking = new AMap.Walking({
+        map: _this.map
+      })
+    },
+    roadPlan([start, end]) {
+      this.walking.search(start, end, (status, info) => {
+        console.log(status, info)
+        if (status === 'complete') {
+          this.$eventHub.$emit('roadInfo', info)
+        } else {
+          this.$vux.toast.show({
+            text: `导航出现错误，请稍后重试 ${info}`,
+            time: 1000
+          });
+        }
+      })
+    },
+    clearRoadPlan() {
+      this.walking.clear();
+    }
+  },
+  beforeDestroy() {
+    this.$eventHub.$off('autoComplete')
+    this.$eventHub.$off('drawMarker')
+    this.$eventHub.$off('roadPlan')
+    this.$eventHub.$off('clearRoadPlan')
+    console.log('map destory')
+  }
 }
     
 </script>
 <style>
 #map-container {
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: .1rem;
-    right: .1rem;
-    z-index: 1;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: .1rem;
+  right: .1rem;
+  z-index: 1;
 }
 </style>

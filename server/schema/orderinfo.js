@@ -40,7 +40,15 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.CHAR(50),
       allowNull: false
     },
+    toLatLng: {
+      type: DataTypes.CHAR(50),
+      allowNull: false
+    },
     boxType: {
+      type: DataTypes.CHAR(128),
+      allowNull: false
+    },
+    boxId: {
       type: DataTypes.CHAR(128),
       allowNull: false
     }

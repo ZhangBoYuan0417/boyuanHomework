@@ -15,7 +15,9 @@ const createNewOrder = async function(params) {
       money: params.money,
       from: params.from,
       to: params.to,
-      boxType: params.boxType.join(',')
+      boxType: params.boxType.join(','),
+      toLatLng: params.toLatLng,
+      boxId: params.boxId
     })
     return {
       code: 0,
@@ -55,8 +57,23 @@ const updataOrderDB = async function(set, where) {
   }
 }
 
+const queryOrderNumDB = async function(queryObj) {
+  try {
+    const res = await Order.findAndCountAll({
+      'where': queryObj
+    })
+    return res.count
+  } catch(error) {
+    return {
+      code: 1,
+      text: `db error: ${error}`
+    }
+  }
+}
+
 module.exports = {
   createNewOrder, // 发单
   findAllOrder, // 查询order表
   updataOrderDB, // 更新order表
+  queryOrderNumDB, //查询订单数量
 }

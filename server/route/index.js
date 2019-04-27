@@ -16,4 +16,6 @@ router.post('/sendOrder', order.sendOrder)
 router.post('/getorders', order.getOrders)
 router.post('/updateOrder', order.updateOrder)
 
+router.post('/orderNum', order.orderNum)
+
 module.exports = router

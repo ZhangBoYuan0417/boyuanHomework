@@ -44,7 +44,8 @@ router.beforeEach((to,from,next) =>{
   }
 })
 
-/* eslint-disable no-new */
+Vue.prototype.$eventHub = new Vue();
+
 new Vue({
   el: '#app',
   router,

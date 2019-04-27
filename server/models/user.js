@@ -27,7 +27,8 @@ const creatNewUser = async function(params) {
   try {
     await User.create({
       name: params.name,
-      password: params.password
+      password: params.password,
+      phone: params.phone
     })
     return {
       code: 0,

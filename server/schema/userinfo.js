@@ -10,6 +10,10 @@ module.exports = function(sequelize, DataTypes) {
     password: {
       type: DataTypes.CHAR(128),
       allowNull: false
+    },
+    phone: {
+      type: DataTypes.CHAR(20),
+      allowNull: false
     }
   }, {
     tableName: 'userinfo'

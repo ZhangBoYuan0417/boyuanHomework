@@ -1,12 +1,13 @@
 const expressObj = {
   false:{name: '请选择快递公司'},
-  zhongt:{name: '中通(学府第一营业部)'},
-  shent:{name: '申通(祥园路店)'},
-  shunfeng:{name: '顺丰(祥园路店)'},
-  baishi:{name: '百世汇通(祥园路店)'},
-  yuant:{name: '圆通(书苑街)'},
-  yunda:{name: '韵达(学府公司)'},
-  tt:{name: '天天快递南岗分部'},
+  hwl:{name: '汇文楼', location:[126.6221210000,45.7093450000]},
+  zhongt:{name: '中通(学府第一营业部)', location: [126.6206190000,45.7102590000]},
+  shent:{name: '申通(祥园路店)', location: [126.6223326585,45.7104854139]},
+  shunfeng:{name: '顺丰(祥园路店)', location: [126.6223561764,45.7107831478]},
+  baishi:{name: '百世汇通(祥园路店)', location: [126.6223078966,45.7111614793]},
+  yuant:{name: '圆通(书苑街)', location: [126.6171919181,45.7113744411]},
+  yunda:{name: '韵达(学府公司)', location: [126.6166350000,45.7113470000]},
+  tt:{name: '天天快递南岗分部', location: [126.6169410000,45.7104370000]},
 }
 
 const boxInfoArr =  [
